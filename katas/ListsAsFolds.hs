@@ -211,7 +211,8 @@ fromConsList :: ConsList a -> List a
 fromConsList xs = List $ foldrConsList xs
 
 tail :: List a -> Option (List a)
-tail xs = (?) (null xs) nothing (fmap fromConsList $ tailConsList $ toConsList xs)
+-- tail xs = (?) (null xs) nothing (fmap fromConsList $ tailConsList $ toConsList xs)
+tail xs = (?) (null xs) nothing (just $ List $ \c n -> snd $ foldr xs (\a m -> (?) (zero $ fst m) m (pair (pred $ fst m) (c a (snd m)))) (pair (pred $ length xs) n))
 
 init :: List a -> Option (List a)
 init xs = (?) (null xs) nothing (just $ List $ \c n -> snd $ foldr xs (\a nn -> (?) (fst nn) (first (const false) nn) (second (c a) nn)) (pair true n))
