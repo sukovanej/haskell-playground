@@ -1,7 +1,7 @@
 module Main where
 
-import SmallestPossibleSumSpec (smallestPossibleSumSpec)
 import Test.Hspec
+import ListsAsFoldsSpec (listAsFoldsSpec)
 
 main :: IO ()
-main = hspec smallestPossibleSumSpec
+main = hspec listAsFoldsSpec

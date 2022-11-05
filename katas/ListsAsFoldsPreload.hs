@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
 
-module ListAsFoldsPreload where
+module ListsAsFoldsPreload where
 
 import Prelude (undefined, ($), Integer, Bool (True), (+), (-), Show(show), (++))
 
@@ -19,8 +19,8 @@ zero 0 = true
 zero _ = false
 
 succ, pred :: Number -> Number
-succ = (+) 1
-pred = (-) 1
+succ x = x + 1
+pred x = x - 1
 
 plus, times :: Number -> Number -> Number
 plus = (+)
@@ -43,25 +43,32 @@ or MyTrue _ = MyTrue
 or _ MyTrue = MyTrue
 or _ _ = MyFalse
 
-data Option a = Just a | Nothing
+and :: Boolean -> Boolean -> Boolean
+and MyTrue MyTrue = MyTrue
+and _ _ = MyFalse
+
+not :: Boolean -> Boolean
+not a = (?) a false true
+
+data Option a = Some a | None
 
 instance Show a => Show (Option a) where
-  show (Just x) = "Just " ++ show x
-  show Nothing = "Nothing "
+  show (Some x) = "Just " ++ show x
+  show None = "Nothing "
 
 nothing :: Option a
-nothing = Nothing
+nothing = None
 
 just :: a -> Option a
-just = Just
+just = Some
 
 fmap :: (a -> b) -> Option a -> Option b
-fmap f (Just x) = just $ f x
-fmap _ Nothing = nothing
+fmap f (Some x) = just $ f x
+fmap _ None = nothing
 
 option :: Option a -> z -> (a -> z) -> z
-option (Just x) _ f = f x
-option Nothing d _ = d
+option (Some x) _ f = f x
+option None d _ = d
 
 type Pair a b = (a, b)
 pair :: a -> b -> Pair a b

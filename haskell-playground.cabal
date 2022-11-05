@@ -32,8 +32,9 @@ test-suite haskell-katas-tests
     other-modules: 
         SmallestPossibleSumSpec,
         SmallestPossibleSum,
-        AssemblerInterpreterSpec,
-        AssemblerInterpreter,
+        ListsAsFoldsSpec,
+        ListsAsFoldsPreload,
+        ListsAsFolds,
     build-depends: 
         base ^>=4.14.3.0,
         hspec ^>=2.10.1,
