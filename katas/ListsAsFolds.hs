@@ -20,7 +20,7 @@ min a b = minc a b
   where minc ca cb = (?) (zero ca) b ((?) (zero cb) a (minc (pred ca) (pred cb)))
 
 const :: a -> b -> a
-const a = \_ -> a
+const a _ = a
 
 indexed :: List a -> List (Pair Number a)
 indexed xs = indexedN xs 0
@@ -82,9 +82,6 @@ repeat x = cons x (repeat x)
 
 cycle :: List a -> List a
 cycle xs = (?) (null xs) undefined (append xs (cycle xs))
-
-getUnsafe :: Number -> List a -> a
-getUnsafe n xs = getOrElse (get n xs) undefined
 
 replicate :: Number -> a -> List a
 replicate n a = (?) (zero n) nil (cons a $ replicate (pred n) a)
@@ -192,27 +189,9 @@ reverse xs = option (last xs) nil (\l -> cons l (option (init xs) nil reverse))
 head :: List a -> Option a
 head xs = (?) (null xs) nothing (foldr xs (\a _ -> just a) nothing)
 
--- TODO: remove pattern matching
-
-data ConsList a = Cons a (ConsList a) | Nil
-
-toConsList :: List a -> ConsList a
-toConsList xs = foldr xs Cons Nil
-
-tailConsList :: ConsList a -> Option (ConsList a)
-tailConsList Nil = nothing
-tailConsList (Cons _ xs) = just xs
-
-foldrConsList :: ConsList a -> (a -> z -> z) -> z -> z
-foldrConsList Nil _ n = n
-foldrConsList (Cons x xs) c n = c x (foldrConsList xs c n)
-
-fromConsList :: ConsList a -> List a
-fromConsList xs = List $ foldrConsList xs
-
+-- please someone kill me
 tail :: List a -> Option (List a)
--- tail xs = (?) (null xs) nothing (fmap fromConsList $ tailConsList $ toConsList xs)
-tail xs = (?) (null xs) nothing (just $ List $ \c n -> snd $ foldr xs (\a m -> (?) (zero $ fst m) m (pair (pred $ fst m) (c a (snd m)))) (pair (pred $ length xs) n))
+tail list@(List xs) = (?) (null list) nothing $ just $ List $ (\l c n -> l (\h t g -> g h (t c)) (const n) (\_ t -> t)) xs
 
 init :: List a -> Option (List a)
 init xs = (?) (null xs) nothing (just $ List $ \c n -> snd $ foldr xs (\a nn -> (?) (fst nn) (first (const false) nn) (second (c a) nn)) (pair true n))
@@ -221,7 +200,7 @@ last :: List a -> Option a
 last xs = foldr xs (\a n -> (?) (isNothing n) (just a) n) nothing
 
 zip :: List a -> List b -> List (Pair a b)
-zip ls rs = option (chain (\l -> fmap (\r -> pair l r) rhead) lhead) nil (\p -> cons p (zip ltail rtail))
+zip ls rs = option (chain (\l -> fmap (pair l) rhead) lhead) nil (\p -> cons p (zip ltail rtail))
   where lhead = head ls
         rhead = head rs
         ltail = getOrElse (tail ls) nil
