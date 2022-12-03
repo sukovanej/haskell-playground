@@ -2,10 +2,16 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Main where
+import Data.Functor
 
 main :: IO ()
 main = putStrLn "Hello, Haskell!"
 
+ioValue :: IO Int
+ioValue = pure 1
+
+newList :: IO Int
+newList = ioValue <&> (* 2) <&> (+ 2) <&> (`mod` 2)
 
 data Free f a = Pure a | Free (f (Free f a))
 

@@ -1,7 +1,7 @@
 module Main where
 
+import RegexParserSpec (regexParserSpec)
 import Test.Hspec
-import ListsAsFoldsSpec (listAsFoldsSpec)
 
 main :: IO ()
-main = hspec listAsFoldsSpec
+main = hspec regexParserSpec
