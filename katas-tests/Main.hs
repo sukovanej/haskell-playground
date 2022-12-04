@@ -1,7 +1,7 @@
 module Main where
 
-import RegexParserSpec (regexParserSpec)
+import ApplicativeParserSpec (applicativeParserSpec)
 import Test.Hspec
 
 main :: IO ()
-main = hspec regexParserSpec
+main = hspec applicativeParserSpec

@@ -31,6 +31,8 @@ executable tests
     import: warnings
     main-is: Main.hs
     other-modules: 
+        ApplicativeParserSpec,
+        ApplicativeParser,
         RegexParserSpec,
         RegexParser,
         SmallestPossibleSumSpec,
